@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Coursework Practice Portal</title>
+  <meta name="description" content="Master security principles, mobile security, cryptography, TLS, web security, and consensus protocols with our high-fidelity interactive coursework practice portal.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="background-glow" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon" aria-hidden="true">S</div>
+      <div class="logo-text">
+        <h1>Security Hub</h1>
+        <p>Coursework Quiz Practice</p>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <!-- Timed Mode Panel (visible in mock mode) -->
+      <div id="timerContainer" class="timer-container" style="display: none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span id="timerText">00:00</span>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-selector" role="radiogroup" aria-label="Practice Mode Switch">
+        <button id="modePractice" class="mode-btn active" role="radio" aria-checked="true" onclick="setMode('practice')">Practice</button>
+        <button id="modeMock" class="mode-btn" role="radio" aria-checked="false" onclick="setMode('mock')">Mock Exam</button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark/Light Mode" onclick="toggleTheme()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon-dark">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="main-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      
+      <!-- Stats / Summary Panel -->
+      <section class="panel" aria-labelledby="stats-title">
+        <h2 id="stats-title" class="panel-title">
+          <span>Overall Stats</span>
+          <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="resetQuizState()">Reset</button>
+        </h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span id="statScore" class="stat-val">0 / 0</span>
+            <span class="stat-label">Correct</span>
+          </div>
+          <div class="stat-card">
+            <span id="statAccuracy" class="stat-val">0%</span>
+            <span class="stat-label">Accuracy</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category Navigation Panel -->
+      <section class="panel" aria-labelledby="categories-title">
+        <h2 id="categories-title" class="panel-title">Topics & Modules</h2>
+        <nav class="category-list" id="categoryList" aria-label="Categories Selector">
+          <!-- Populated by JS -->
+        </nav>
+      </section>
+
+      <!-- Question Selection Panel -->
+      <section class="panel" aria-labelledby="questions-nav-title">
+        <h2 id="questions-nav-title" class="panel-title">Question Board</h2>
+        <div class="question-nav-grid" id="questionNavGrid" aria-label="Question selector dots">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+      
+    </aside>
+
+    <!-- Quiz Panel -->
+    <section class="quiz-display" aria-live="polite">
+      
+      <!-- Progress Bar Card -->
+      <div class="panel progress-bar-container">
+        <div class="progress-info">
+          <span id="progressText">Question 1 of 95</span>
+          <span id="progressPercent">0% Completed</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressBarFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Active Question Panel -->
+      <div class="panel question-card" id="questionCard">
+        
+        <!-- Meta Row -->
+        <div class="question-meta">
+          <span id="questionCategory" class="question-category">Topic Category</span>
+          <span id="questionTypeBadge" class="question-type-badge">MCQ</span>
+        </div>
+
+        <!-- Question Text -->
+        <h3 id="questionText" class="question-text">Loading question content...</h3>
+
+        <!-- Options Container -->
+        <form id="optionsForm" class="options-list" onsubmit="event.preventDefault();">
+          <!-- Populated by JS -->
+        </form>
+
+        <!-- Explanatory Block (Visible post check/submit in Practice/Mock Review) -->
+        <div id="explanationContainer" class="explanation-container" style="display: none;">
+          <div class="explanation-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Core Logic Explanation</span>
+          </div>
+          <p id="explanationText" class="explanation-text"></p>
+        </div>
+
+        <!-- Card Buttons -->
+        <div class="card-actions">
+          <div class="nav-actions">
+            <button id="btnPrev" class="btn" onclick="prevQuestion()" aria-label="Previous Question">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span>Back</span>
+            </button>
+            <button id="btnNext" class="btn" onclick="nextQuestion()" aria-label="Next Question">
+              <span>Next</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Main Submissions action -->
+          <button id="btnAction" class="btn btn-primary" onclick="handleActionButtonClick()">Check Answer</button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>Practice Portal &copy; 2026. Custom built for Security Engineering and Cryptography Practice.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
