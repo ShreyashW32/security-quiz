@@ -229,6 +229,16 @@ header {
   transform: translateY(0);
 }
 
+.btn-reset {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--error);
+}
+
+.btn-reset:hover {
+  border-color: var(--error);
+  background: var(--error-glow);
+}
+
 .mode-selector {
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);

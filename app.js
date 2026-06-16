@@ -332,6 +332,23 @@ function prevQuestion() {
   }
 }
 
+// Reset current question only
+function resetCurrentQuestionState() {
+  const q = currentQuestionsList[currentQuestionIndex];
+  if (!q) return;
+  if (quizMode === 'mock' && mockExamSubmitted) return;
+  
+  delete userAnswersState[q.id];
+  if (quizMode === 'practice') {
+    delete checkedQuestionsState[q.id];
+  }
+  
+  saveStateToLocalStorage();
+  renderActiveQuestion();
+  renderQuestionNav();
+  updateStats();
+}
+
 // Handle action button clicking
 function handleActionButtonClick() {
   const q = currentQuestionsList[currentQuestionIndex];
@@ -660,6 +677,7 @@ function resetCardHtmlTemplate() {
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
+        <button id="btnResetQuestion" class="btn btn-reset" onclick="resetCurrentQuestionState()" aria-label="Reset Current Question">Reset Question</button>
       </div>
       <button id="btnAction" class="btn btn-primary" onclick="handleActionButtonClick()">Check Answer</button>
     </div>
@@ -675,6 +693,7 @@ function resetQuizState() {
   checkedQuestionsState = {};
   mockExamActive = false;
   mockExamSubmitted = false;
+  currentCategory = 'all';
   currentQuestionIndex = 0;
   
   if (timerInterval) clearInterval(timerInterval);
