@@ -660,6 +660,7 @@ function resetCardHtmlTemplate() {
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
         </button>
+        <button id="btnResetQuiz" class="btn btn-reset" onclick="resetQuizState()" aria-label="Reset Quiz">Reset Quiz</button>
       </div>
       <button id="btnAction" class="btn btn-primary" onclick="handleActionButtonClick()">Check Answer</button>
     </div>
@@ -675,6 +676,7 @@ function resetQuizState() {
   checkedQuestionsState = {};
   mockExamActive = false;
   mockExamSubmitted = false;
+  currentCategory = 'all';
   currentQuestionIndex = 0;
   
   if (timerInterval) clearInterval(timerInterval);
